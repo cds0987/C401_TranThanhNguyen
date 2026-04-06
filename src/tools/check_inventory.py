@@ -1,3 +1,5 @@
+import sys, os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 from src.tools.init_db import get_connection
 
 def check_inventory(product_id: str) -> str:

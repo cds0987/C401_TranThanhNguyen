@@ -1,3 +1,5 @@
+import sys, os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 from src.tools.init_db import get_connection
 
 def compare_product(product_list: str) -> str:
