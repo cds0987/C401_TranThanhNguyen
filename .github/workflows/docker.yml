@@ -10,23 +10,43 @@ jobs:
 
     permissions:
       contents: read
-      packages: write   # 🔥 FIX Ở ĐÂY
+      packages: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # lowercase image name
       - name: Set image name lowercase
         run: echo "IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
+      # login GHCR
       - name: Login GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+      # build image
       - name: Build Docker
         run: docker build -t $IMAGE_NAME:latest .
 
-      - name: Run container test
-        run: docker run -e GithubAPI=${{ secrets.GithubAPI }} $IMAGE_NAME:latest
+      # 🚀 run API container
+      - name: Run FastAPI container
+        run: |
+          docker run -d -p 8000:8000 -e GithubAPI=${{ secrets.GithubAPI }} --name test-api $IMAGE_NAME:latest
+          sleep 10
 
+      # 🧪 test API
+      - name: Test API health
+        run: curl http://localhost:8000/
+
+      # 🧪 test chat endpoint
+      - name: Test API chat
+        run: |
+          curl -X POST "http://localhost:8000/chat?query=hello"
+
+      # cleanup container
+      - name: Stop container
+        run: docker stop test-api
+
+      # push image nếu tất cả OK
       - name: Push Docker
         run: docker push $IMAGE_NAME:latest

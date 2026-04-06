@@ -2,14 +2,13 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Copy source
 COPY . .
 
-# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set PYTHONPATH để import src
+# thêm fastapi + uvicorn nếu chưa có
+RUN pip install fastapi uvicorn
+
 ENV PYTHONPATH=/app
 
-# Run app
-CMD ["python", "-m", "src.tools.buildagent"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
