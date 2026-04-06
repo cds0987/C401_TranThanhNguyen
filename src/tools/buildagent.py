@@ -1,3 +1,5 @@
+import sys, os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 from src.tools.get_product_detail import get_product_detail
 from src.tools.compare_product import compare_product
 from src.tools.check_inventory import check_inventory  # thêm
@@ -81,13 +83,15 @@ fn_map = {
 }
 
 react_tools = openai_tools_to_react(openai_tools, fn_map)
-agent = ReActAgent(llm=llm, tools=react_tools, max_steps=3)
 
-# Tool 1
-agent.run("Cho tôi thông tin sản phẩm p001")
 
-# Tool 2
-agent.run("So sánh sản phẩm p001 và p003")
+if __name__ == "__main__":
+    agent = ReActAgent(llm=llm, tools=react_tools, max_steps=3)
+    # Tool 1
+    agent.run("Cho tôi thông tin sản phẩm p001")
 
-# Tool 3
-agent.run("Kiểm tra tồn kho sản phẩm p002")
+    # Tool 2
+    agent.run("So sánh sản phẩm p001 và p003")
+
+    # Tool 3
+    agent.run("Kiểm tra tồn kho sản phẩm p002")
